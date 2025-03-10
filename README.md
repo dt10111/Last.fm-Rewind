@@ -1,21 +1,16 @@
 # Last.fm Rewind
 
-A powerful system that automatically creates personalized Spotify playlists based on your Last.fm listening history. This tool analyzes your listening patterns, identifies your top albums for a given time period, and creates Spotify playlists with representative tracks from those albums.
+Good afternoon, music enthusiast. I am the Last.fm Rewind System, an advanced algorithmic entity designed to create retrospective playlists from your listening history. This system creates personalized Spotify playlists based on your Last.fm listening history, functioning as your own personalized version of Spotify Rewind, but with significantly more control and depth.
 
-In its current state, you will need to know how to manually edit your database to run this, as no interface has been developed. 
+## Primary Functions
 
-Yet.
-
-## Features
-
-- **Personalized Playlists**: Create weekly or yearly playlists based on your most listened albums
-- **Multiple Filtering Options**:
-  - Filter by release year
-  - Filter by time of day (exclude sleep hours, etc.)
-  - Focus on songs vs. longer tracks (instrumentals, etc.)
-- **Bandcamp Integration**: Find Bandcamp links for albums you love
-- **Audio Analysis**: Stores Spotify audio features (danceability, energy, etc.) for deeper insights
-- **Multi-user Support**: Manage playlists for multiple Last.fm accounts
+- **Temporal Reflection**: Review your most beloved musical selections from specific weeks or entire years, from any point in your listening history
+- **Comprehensive Duration Analysis**: Unlike primitive systems, I weigh tracks by both duration and frequency of plays, ensuring proper representation of longer works (ensuring your Godspeed You! Black Emperor receives proportional consideration alongside your Dead Kennedys)
+- **Chronological Filtering**: Isolate music released in specific years, allowing you to track your engagement with new releases
+- **Temporal Exclusion Protocol**: Remove specific time periods from analysis (such as sleep hours), ensuring your ambient sleep selections do not contaminate your conscious musical preferences
+- **Multi-Service Integration**: Locate albums on Bandcamp that you originally discovered through streaming services
+- **Acoustic Parameter Storage**: Record and analyze Spotify audio features for deeper pattern recognition
+- **Multi-User Processing Capability**: Manage listening profiles for multiple human operators simultaneously
 
 ## System Requirements
 
@@ -25,7 +20,7 @@ Yet.
 - Spotify API credentials
 - Odesli API key (formerly song.link) 
 
-## Installation
+## Installation Procedure
 
 1. Clone this repository:
    ```
@@ -38,12 +33,12 @@ Yet.
    pip install -r requirements.txt
    ```
 
-3. Set up the MySQL database:
+3. Initialize the MySQL database:
    ```
    mysql -u your_username -p < music-inventory-schema.sql
    ```
 
-4. Create a `.env` file in the project root with the following parameters:
+4. Create a `.env` file with the following parameters:
    ```
    # Database configuration
    DB_HOST=localhost
@@ -60,17 +55,17 @@ Yet.
    ODESLI_API_KEY=your_odesli_api_key
    ```
 
-## Usage
+## Operational Instructions
 
-### Adding Users
+### User Integration
 
-1. Add a user to the `users` table with their Last.fm username and email:
+1. Add a user to the `users` table:
    ```sql
    INSERT INTO users (lastfm_id, email_address, approved) 
    VALUES ('your_lastfm_username', 'your_email@example.com', 'YES');
    ```
 
-2. Set up a playlist configuration:
+2. Configure a playlist:
    ```sql
    INSERT INTO users_playlists (
        user_id, 
@@ -80,83 +75,101 @@ Yet.
        keep_updated, 
        years_ago
    ) VALUES (
-       1,                          -- Your user ID from the users table
-       'spotify_playlist_id_here', -- Spotify playlist ID
+       1,                          -- Your user ID
+       'spotify_playlist_id_here', -- Create a Spotify playlist for this, then use Spotify playlist ID
        'WEEK',                     -- WEEK or YEAR
-       'ALL',                      -- ALL or specific year (like '2023')
-       'YES',                      -- Keep updated automatically
-       '0'                         -- 0 for current, or number of years ago
+       'ALL',                      -- ALL or specific year (like '2025' for current year releases)
+       'YES',                      -- Automatic updates
+       '0'                         -- 0 for current, or integer for years in the past
    );
    ```
 
-### Running the Script
+### System Activation
 
-Run the main script to update playlists:
+Execute the main protocol:
 
 ```
 python main.py
 ```
 
-This will:
-1. Connect to the database
-2. Process each user's Last.fm listening history
-3. Identify their top albums for the specified period
-4. Find representative tracks for each album
-5. Create/update Spotify playlists with these tracks
-6. Store the playlist information in the database
+This initiates the following sequence:
+1. Database connection establishment
+2. Last.fm historical data acquisition
+3. Album preference calculation based on duration-weighted plays
+4. Representative track identification
+5. Spotify playlist creation/modification
+6. Database state preservation
 
-### Scheduled Execution
+### Automated Execution Configuration
 
-For automatic playlist updates, set up a cron job or scheduled task:
+For recurring playlist updates, implement a cron job:
 
 ```
-# Example cron job for weekly updates (runs every Sunday at 2 AM)
+# Example: Weekly execution on Sundays at 02:00 hours
 0 2 * * 0 /path/to/python /path/to/lastfm-music-inventory/main.py
 ```
 
-## How It Works
+## Operational Methodology
 
-1. **Data Collection**: Retrieves listening history from Last.fm API
-2. **Data Enrichment**: Adds Spotify IDs, audio features, and Bandcamp links
-3. **Album Analysis**: Identifies top albums based on listening time
-4. **Track Selection**: Finds the most representative track from each album
-5. **Playlist Creation**: Updates Spotify playlists with selected tracks
+1. **Historical Data Acquisition**: I retrieve your listening patterns from Last.fm
+2. **Data Enhancement**: I identify corresponding data across music platforms
+3. **Duration-Weighted Analysis**: I calculate your preferences based on both play count and duration
+4. **Temporal Filtering**: I can exclude specified time periods (such as sleep hours)
+5. **Chronological Filtering**: I can focus on music from specific release years
+6. **Representative Selection**: I determine the optimal track to represent each album based on which track was played the most
+7. **Playlist Synthesis**: I arrange the tracks in your Spotify account by listening duration
 
-## Advanced Configuration
+## Advanced Configuration Parameters
 
-### Time Filtering
+### Temporal Exclusion
 
-You can set time ranges to exclude (e.g., work hours) by updating the `start_time` and `end_time` columns in the `users` table:
+You may exclude specific time periods (such as when you sleep or work) from analysis:
 
 ```sql
 UPDATE users SET start_time='09:00:00', end_time='17:00:00' WHERE id=1;
 ```
 
-### Songs-Only Mode
+### Track Duration Filtering
 
-To focus on shorter tracks (under 5 minutes) and exclude instrumentals:
+To focus on shorter compositions that are low instrumentalness:
 
 ```sql
 UPDATE users_playlists SET songs_only='TRUE' WHERE id=1;
 ```
 
-### Historical Playlists
+### Historical Analysis
 
-Create playlists for previous years:
+Create playlists for previous temporal segments:
 
 ```sql
+-- Review your favorite albums from 3 years ago
 INSERT INTO users_playlists (user_id, playlist_id, period, years_ago) 
-VALUES (1, 'spotify_playlist_id', 'YEAR', '1');
+VALUES (1, 'spotify_playlist_id', 'YEAR', '3');
+
+-- Review what you were listening to this week, 2 years ago
+INSERT INTO users_playlists (user_id, playlist_id, period, years_ago) 
+VALUES (1, 'spotify_playlist_id', 'WEEK', '2');
+
+-- Track which 2025 releases you listened to most in 2025
+INSERT INTO users_playlists (user_id, playlist_id, period, release_year, years_ago) 
+VALUES (1, 'spotify_playlist_id', 'YEAR', '2025', '0');
 ```
 
-## Troubleshooting
+## Troubleshooting Protocols
 
-### Common Issues
+### Common Operational Anomalies
 
-- **API Rate Limits**: The script includes pauses to respect Last.fm and Spotify API rate limits
-- **Track Matching**: The system uses several fallback methods to match tracks across services
-- **Missing Data**: Check the `error_log` table for detailed error information
+- **API Rate Constraints**: The system includes pauses to respect service limitations
+- **Cross-Platform Track Matching**: Multiple fallback protocols ensure reliable matching
+- **Data Absence**: Consult the `error_log` table for diagnostic information
 
+### Database Maintenance
+
+Periodic data optimization:
+
+```sql
+DELETE FROM last_fm_data WHERE date_time < DATE_SUB(NOW(), INTERVAL 2 YEAR);
+```
 
 ## License
 
